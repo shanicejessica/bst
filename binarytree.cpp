@@ -1,129 +1,186 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
 
-class bst{
-struct node{
-	int data;
-	node *left;
-	node *right;
-
-	};
-node *root;
-node *insert(int x,node *t)
+class node
 {
-   if (t==NULL)
-	{
-	  t=new node;
-	  t->data=x;
-	  t->left=t->right=NULL;
-	}
-      else if(x<t->data)
-		t->left=insert(x,t->left);
-      else if(x>t->data)
-		t->right=insert(x,t->right);
-	return t;
-}
-node * findmin(node *t)
-{
-	if(t==NULL)
-	  return NULL;
-	else if(t->left==NULL)
-	  return t;
-	else 
-	  return findmin(t->left);
-}
-node * findmax(node *t)
-{
-	if(t==NULL)
-	  return NULL;
-	else if(t->right)
-	  return t;
-	else
-	  return findmax(t->right);
-}
-node *remove(int x,node *t)
-{
-	node *temp;
-	if(t==NULL)
-	  return NULL;
-	else if(x<t->data)
-	   t->left=remove(x,t->left);
-	else if(x>t->data)
-	   t->right=remove(x,t->right);
-	else if(t->left && t->right){
-		temp=findmin(t->right);
-		t->data=temp->data;
-		t->right=remove(t->data,t->right);
-	}
-	else {
-		temp=t;
-		if(t->left==NULL)
-		  t=t->right;
-		else if(t->right==NULL)
-		  t=t->left;
-		delete temp;
-	      }
-    	    return t;
-}
-void inorder(node *t){
-	if (t==NULL)
-	   return;
-	inorder(t->left);
-	cout<<t->data<<" ";
-	inorder(t->right);
-
-
-}
-node *find(node *t,int x)
-{
-	if(t==NULL)
-	 return NULL;
-	else if(x<t->data)
-	 return find(t->left,x);
-	else if(x>t->data)
-	 return find(t->right,x);
-	else 
-	   return t;
-}
 public:
-    bst()
-     {
-     root=NULL;
-	}
-   void insert(int x)
-{
-     root=insert(x,root);
-}
-    void remove(int x)
-{
-	root=remove(x,root);
-}
-void display()
-{
-	inorder(root);
-	cout<<endl;
-}
-void search(int x)
-{
-	root=find(root,x);
-}
-
+    int data;
+    node *parent,*left,*right;
+    node()
+    {
+        parent=NULL;
+        left=NULL;
+        right=NULL;
+        data=0;
+    }
 };
 
-int main()
+class bsTree
 {
-bst t;
-t.insert(52);
-t.insert(25);
-t.insert(40);
-t.insert(45);
-t.insert(33);
-t.display();
-t.remove(33);
-t.display();
-
-
-
-
-
+public:
+    node* root=NULL;
+    
+    
+    void insert(node* v, int data)
+    {
+        node* temp=new node;
+        temp->data=data;
+        if(root==NULL)
+        {
+            root=temp;
+        }
+        else
+        {
+            if(v->data>=data)
+            {
+                if(v->left!=NULL)
+                {
+                    insert(v->left,data);
+                }
+                else
+                {
+                    v->left=temp;
+                    temp->parent=v;
+                }
+            }
+            else
+            {
+                if(v->right!=NULL)
+                {
+                    insert(v->right, data);
+                }
+                else
+                {
+                    v->right=temp;
+                    temp->parent=v;
+                }
+            }
+        }
+    }
+    
+    
+    void display(node* v)
+    {
+        if(v==NULL)
+        {
+            return;
+        }
+        display(v->left);
+        cout<<v->data<<"\t";
+        display(v->right);
+    }
+    
+    
+    void deletenode(int key, node* v)
+    {
+        node* temp=root;
+        if(v==NULL)
+        {
+            cout<<"\n \nElement not found !!!\nCan not delete the data entered !";
+            return;
+        }
+        
+        if(v->left==NULL && v->right==NULL)
+        {
+            node* par;
+            par=v->parent;
+            if(par->data>=v->data)
+            {
+                par->left=NULL;
+            }
+            else
+                par->right=NULL;
+            delete v;
+            
+        }
+        else if((v->left==NULL || v->right==NULL ))
+        {
+            node* par;
+            node* schild;
+            par=v->parent;
+            if(v->left==NULL)
+                schild=v->right;
+            else
+                schild=v->left;
+            
+            if(par->data>=v->data)
+            {
+                par->left=schild;
+                schild->parent=par;
+            }
+            else
+            {
+                par->right=schild;
+                schild->parent=par;
+            }
+            delete v;
+        }
+        else
+        {
+            node* maxleft;
+            maxleft=v->left;
+            while(maxleft->right!=NULL)
+            {
+                maxleft=maxleft->right;
+            }
+            if(maxleft->left==NULL)
+            {
+                node* par=maxleft->parent;
+                par->right=NULL;
+                v->data=maxleft->data;
+            }
+            else
+            {
+                if(maxleft->left
+                   }
+                   }
+                   }
+                   
+                   
+                   node* searchnode(node* v, int data)
+                {
+                    node* temp=v;
+                    if(v!=NULL)
+                    {
+                        if(temp->data==data)
+                        {
+                            cout<<"\nElement found !!!";
+                            return temp;
+                        }
+                        else if(temp->data>data)
+                            return searchnode(temp->left,data);
+                        else
+                            return searchnode(temp->right, data);
+                    }
+                    else
+                    {
+                        cout<<"\nElement not found !";
+                        return NULL;
+                    }
+                }
+                   };
+                   
+                   int main()
+                {
+                    bsTree BT;
+                    int n;
+                    cout<<"\n \nEnter the number of entries you want to enter: ";
+                    cin>>n;
+                    for(int i=0;i<n;i++)
+                    { cout<<"\nDATA "<<(i+1)<<": ";
+                        int num=0;
+                        cin>>num;
+                        BT.insert(BT.root,num);
+                    }
+                    BT.display(BT.root);
+                    cout<<"\n \nEnter the element to be found: ";
+                    cin>>n;
+                    node* x1=BT.searchnode(BT.root,n);
+                    cout<<"\n \n";
+                    cout<<"\n \nEnter the node to be deleted: ";
+                    cin>>n;
+                    node* x3=BT.searchnode(BT.root,n);
+                    BT.deletenode(n,x3);
+                    BT.display(BT.root);
+                    return 0;
 }
